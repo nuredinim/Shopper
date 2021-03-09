@@ -83,6 +83,18 @@ public class ViewList extends AppCompatActivity {
                 // call mehtod that updates the clicked items item_has to true
                 // if its false
                 updateItem(id);
+
+                // initialize intent for viewlist activity
+                intent = new Intent(ViewList.this, ViewItem.class);
+
+                // put the database id on the intent
+                intent.putExtra("_id", id);
+
+                // put the database of the clicked shopping list in the intent
+                intent.putExtra("_list_id", ViewList.this.id);
+
+                // start the viewlist activity
+                startActivity(intent);
             }
         });
     }
