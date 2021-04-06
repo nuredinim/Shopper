@@ -1,70 +1,44 @@
-package com.example.shopper;
+package com.example.shopper
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+import android.content.ContentValues
+import android.content.Context
+import android.database.Cursor
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteDatabase.CursorFactory
+import android.database.sqlite.SQLiteOpenHelper
 
-import androidx.annotation.Nullable;
-
-public class DBHandler extends SQLiteOpenHelper {
-
-    // initialize constants for the DB name and version
-    public static final String DATABASE_NAME = "shopper.db";
-    public static final int DATABASE_VERSION = 2;
-
-    // initialize constants for the shoppingList table
-    public static final String TABLE_SHOPPING_LIST = "shoppingList";
-    public static final String COLUMN_LIST_ID = "_id";
-    public static final String COLUMN_LIST_NAME = "name";
-    public static final String COLUMN_LIST_STORE = "store";
-    public static final String COLUMN_LIST_DATE = "date";
-
-    // initialize constants for the shoppingListItem table
-    public static final String TABLE_SHOPPING_LIST_ITEM = "shoppinglistitem";
-    public static final String COLUMN_ITEM_ID = "_id";
-    public static final String COLUMN_ITEM_NAME = "name";
-    public static final String COLUMN_ITEM_PRICE = "price";
-    public static final String COLUMN_ITEM_QUANTITY = "quantity";
-    public static final String COLUMN_ITEM_HAS = "item_has";
-    public static final String COLUMN_ITEM_LIST_ID = "list_id";
-
-    /**
-     * Create a version of the Shopper database
-     * @param context reference to the activity that initializes a DBHandler
-     * @param factory null
-     */
-    public DBHandler(Context context, SQLiteDatabase.CursorFactory factory) {
-        super(context, DATABASE_NAME, factory, DATABASE_VERSION);
-    }
-
+class DBHandler
+/**
+ * Create a version of the Shopper database
+ * @param context reference to the activity that initializes a DBHandler
+ * @param factory null
+ */
+(context: Context?, factory: CursorFactory?) : SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSION) {
     /**
      * Creates shopper database tables
      * @param sqLiteDatabase reference to shopper database
      */
-    @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
+    override fun onCreate(sqLiteDatabase: SQLiteDatabase) {
 
         // define create statement for shoppingLList table and store it in a String
-        String query = "CREATE TABLE " + TABLE_SHOPPING_LIST + "(" + COLUMN_LIST_ID +
+        val query = "CREATE TABLE " + TABLE_SHOPPING_LIST + "(" + COLUMN_LIST_ID +
                 " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_LIST_NAME + " TEXT, " +
-                COLUMN_LIST_STORE + " TEXT, " + COLUMN_LIST_DATE + " TEXt);";
+                COLUMN_LIST_STORE + " TEXT, " + COLUMN_LIST_DATE + " TEXt);"
 
         // execute the statement
-        sqLiteDatabase.execSQL(query);
+        sqLiteDatabase.execSQL(query)
 
         // define create statement for shoppingLListItem table and store it in a String
-        String query2 = "CREATE TABLE " + TABLE_SHOPPING_LIST_ITEM + "(" +
+        val query2 = "CREATE TABLE " + TABLE_SHOPPING_LIST_ITEM + "(" +
                 COLUMN_ITEM_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_ITEM_NAME + " TEXT, " +
                 COLUMN_ITEM_PRICE + " DECIMAL(10,2), " +
                 COLUMN_ITEM_QUANTITY + " INTEGER, " +
                 COLUMN_ITEM_HAS + " TEXT, " +
-                COLUMN_ITEM_LIST_ID + " INTEGER);";
+                COLUMN_ITEM_LIST_ID + " INTEGER);"
 
         // execute the statement
-        sqLiteDatabase.execSQL(query2);
+        sqLiteDatabase.execSQL(query2)
     }
 
     /**
@@ -73,23 +47,22 @@ public class DBHandler extends SQLiteOpenHelper {
      * @param oldVersion old version of the shopper database
      * @param newVersion new version of the shopper database
      */
-    @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
+    override fun onUpgrade(sqLiteDatabase: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
 
         // define drop statement and store it in a String
-        String query = "DROP TABLE IF EXISTS " + TABLE_SHOPPING_LIST;
+        val query = "DROP TABLE IF EXISTS $TABLE_SHOPPING_LIST"
 
         // execute the drop statement
-        sqLiteDatabase.execSQL(query);
+        sqLiteDatabase.execSQL(query)
 
         // define drop statement and store it in a String
-        String query2 = "DROP TABLE IF EXISTS " + TABLE_SHOPPING_LIST_ITEM;
+        val query2 = "DROP TABLE IF EXISTS $TABLE_SHOPPING_LIST_ITEM"
 
         // execute the drop statement
-        sqLiteDatabase.execSQL(query2);
+        sqLiteDatabase.execSQL(query2)
 
         // call method that creates the tables
-        onCreate(sqLiteDatabase);
+        onCreate(sqLiteDatabase)
     }
 
     /**
@@ -99,76 +72,81 @@ public class DBHandler extends SQLiteOpenHelper {
      * @param store shopping list store
      * @param date shopping list date
      */
-    public void addShoppingList(String name, String store, String date){
+    fun addShoppingList(name: String?, store: String?, date: String?) {
         // get reference to the shopper database
-        SQLiteDatabase db = getWritableDatabase();
+        val db = writableDatabase
 
         // initialize a content values object
-        ContentValues values = new ContentValues();
+        val values = ContentValues()
 
         // put data into ContentValues object
-        values.put(COLUMN_LIST_NAME, name);
-        values.put(COLUMN_LIST_STORE, store);
-        values.put(COLUMN_LIST_DATE, date);
+        values.put(COLUMN_LIST_NAME, name)
+        values.put(COLUMN_LIST_STORE, store)
+        values.put(COLUMN_LIST_DATE, date)
 
         // insert data in ContentVales object into shoppinglist table
-        db.insert(TABLE_SHOPPING_LIST, null, values);
+        db.insert(TABLE_SHOPPING_LIST, null, values)
 
         //close database reference
-        db.close();
-    }
+        db.close()
+    }// get reference to the shopper database
+
+    // define select statement and store it in a string
+
+    // execute select statement and return it as a Cursor
 
     /**
      * This method gets called when the MainActivity is created. It will select
      * and return all of the data in the shoppinglist table
      * @return Cursor that contains all data in the shoppinglist table
      */
-    public Cursor getShoppingLists(){
+    val shoppingLists: Cursor
+        get() {
 
-        // get reference to the shopper database
-        SQLiteDatabase db = getWritableDatabase();
+            // get reference to the shopper database
+            val db = writableDatabase
 
-        // define select statement and store it in a string
-        String query = "SELECT * FROM " + TABLE_SHOPPING_LIST;
+            // define select statement and store it in a string
+            val query = "SELECT * FROM $TABLE_SHOPPING_LIST"
 
-        // execute select statement and return it as a Cursor
-        return db.rawQuery(query, null);
-    }
+            // execute select statement and return it as a Cursor
+            return db.rawQuery(query, null)
+        }
 
     /**
      * This method gets called when the viewlist activity is started
      * @param id shopping list id
      * @return shopping list name
      */
-    public String getShoppingListName(int id){
+    fun getShoppingListName(id: Int): String {
 
         // get reference to the shopper database
-        SQLiteDatabase db = getWritableDatabase();
+        val db = writableDatabase
 
         // declare and initialize the String that will be returned
-        String name = "";
+        var name = ""
 
         // define select statement
-        String query = "SELECT * FROM " + TABLE_SHOPPING_LIST +
-                " WHERE " + COLUMN_LIST_ID + " = " + id;
+        val query = "SELECT * FROM " + TABLE_SHOPPING_LIST +
+                " WHERE " + COLUMN_LIST_ID + " = " + id
 
         // execute select statement and store it in a cursor
-        Cursor cursor = db.rawQuery(query, null);
+        val cursor = db.rawQuery(query, null)
 
         // move to first fow in the cursor
-        cursor.moveToFirst();
+        cursor.moveToFirst()
 
         // check that name component of cursor isnt equal to null
-        if ((cursor.getString(cursor.getColumnIndex("name")) != null)){
+        if (cursor.getString(cursor.getColumnIndex("name")) != null) {
             // get the name componenet of the cursor and store it in string
-            name = cursor.getString(cursor.getColumnIndex("name"));
+            name = cursor.getString(cursor.getColumnIndex("name"))
         }
 
         // close reference to shopper database
-        db.close();
+        db.close()
 
         // reaturn shopping list name
-        return name;
+        return name
     }
 
     /**
@@ -179,25 +157,25 @@ public class DBHandler extends SQLiteOpenHelper {
      * @param quantity item quantity
      * @param listId id of the shopping list item to which the item is being added
      */
-    public void addItemToList(String name, Double price, Integer quantity, Integer listId){
+    fun addItemToList(name: String?, price: Double?, quantity: Int?, listId: Int?) {
         // get reference to the shopper database
-        SQLiteDatabase db = getWritableDatabase();
+        val db = writableDatabase
 
         // initialize a content values object
-        ContentValues values = new ContentValues();
+        val values = ContentValues()
 
         // put data into ContentValues object
-        values.put(COLUMN_ITEM_NAME, name);
-        values.put(COLUMN_ITEM_PRICE, price);
-        values.put(COLUMN_ITEM_QUANTITY, quantity);
-        values.put(COLUMN_ITEM_HAS, "false");
-        values.put(COLUMN_ITEM_LIST_ID, listId);
+        values.put(COLUMN_ITEM_NAME, name)
+        values.put(COLUMN_ITEM_PRICE, price)
+        values.put(COLUMN_ITEM_QUANTITY, quantity)
+        values.put(COLUMN_ITEM_HAS, "false")
+        values.put(COLUMN_ITEM_LIST_ID, listId)
 
         // insert data in ContentVales object into shoppinglistitem table
-        db.insert(TABLE_SHOPPING_LIST_ITEM, null, values);
+        db.insert(TABLE_SHOPPING_LIST_ITEM, null, values)
 
         //close database reference
-        db.close();
+        db.close()
     }
 
     /**
@@ -206,17 +184,17 @@ public class DBHandler extends SQLiteOpenHelper {
      * @return Cursor that contains all of the items associated with the specified
      * shoppinglist id
      */
-    public Cursor getShoppingListItems(Integer listId){
+    fun getShoppingListItems(listId: Int): Cursor {
 
         // get reference to the shopper database
-        SQLiteDatabase db = getWritableDatabase();
+        val db = writableDatabase
 
         // define select statement and store it in a string
-        String query = "SELECT * FROM " + TABLE_SHOPPING_LIST_ITEM +
-                " WHERE " + COLUMN_ITEM_LIST_ID + " = " + listId;
+        val query = "SELECT * FROM " + TABLE_SHOPPING_LIST_ITEM +
+                " WHERE " + COLUMN_ITEM_LIST_ID + " = " + listId
 
         // execute select statement and return it as a Cursor
-        return db.rawQuery(query, null);
+        return db.rawQuery(query, null)
     }
 
     /**
@@ -224,21 +202,21 @@ public class DBHandler extends SQLiteOpenHelper {
      * @param itemId database id of the clicked item
      * @return 1 if clicked item is unpurchased, else 0
      */
-    public int isItemUnpurchased(Integer itemId){
+    fun isItemUnpurchased(itemId: Int): Int {
 
         // get reference to the shopper database
-        SQLiteDatabase db = getWritableDatabase();
+        val db = writableDatabase
 
         // define select statement and store it in a string
-        String query = "SELECT * FROM " + TABLE_SHOPPING_LIST_ITEM +
+        val query = "SELECT * FROM " + TABLE_SHOPPING_LIST_ITEM +
                 " WHERE " + COLUMN_ITEM_HAS + " = \"false\" " +
-                " AND " + COLUMN_ITEM_ID + " = " + itemId;
+                " AND " + COLUMN_ITEM_ID + " = " + itemId
 
         // execute select statement and store result in a cursor
-        Cursor cursor = db.rawQuery(query, null);
+        val cursor = db.rawQuery(query, null)
 
         // return a count of the number of rows in the cursor
-        return (cursor.getCount());
+        return cursor.count
     }
 
     /**
@@ -246,21 +224,21 @@ public class DBHandler extends SQLiteOpenHelper {
      * It sets the clicked items item_has value to true
      * @param itemId database id of the clicked item
      */
-    public void updateItem(Integer itemId){
+    fun updateItem(itemId: Int) {
 
         // get reference to the shopper database
-        SQLiteDatabase db = getWritableDatabase();
+        val db = writableDatabase
 
         // define update statement and store it in a string
-        String query = "UPDATE " + TABLE_SHOPPING_LIST_ITEM + " SET " +
+        val query = "UPDATE " + TABLE_SHOPPING_LIST_ITEM + " SET " +
                 COLUMN_ITEM_HAS + " = \"true\" " + " WHERE " +
-                COLUMN_ITEM_ID + " = " + itemId;
+                COLUMN_ITEM_ID + " = " + itemId
 
         // execute the update statement
-        db.execSQL(query);
+        db.execSQL(query)
 
         // close db connection
-        db.close();
+        db.close()
     }
 
     /**
@@ -269,16 +247,16 @@ public class DBHandler extends SQLiteOpenHelper {
      * @return cursor that contains all of the data associated the clicked
      * shopping list item
      */
-    public Cursor getShoppingListItem (Integer itemId){
+    fun getShoppingListItem(itemId: Int): Cursor {
         // get reference to the shopper database
-        SQLiteDatabase db = getWritableDatabase();
+        val db = writableDatabase
 
         // define select statement and store it in a string
-        String query = "SELECT * FROM " + TABLE_SHOPPING_LIST_ITEM +
-                " WHERE " + COLUMN_ITEM_ID + " = " + itemId;
+        val query = "SELECT * FROM " + TABLE_SHOPPING_LIST_ITEM +
+                " WHERE " + COLUMN_ITEM_ID + " = " + itemId
 
         // execute select statement and return it as a Cursor
-        return db.rawQuery(query, null);
+        return db.rawQuery(query, null)
     }
 
     /**
@@ -286,20 +264,20 @@ public class DBHandler extends SQLiteOpenHelper {
      * deletes a row in the shopping rlist item table
      * @param itemId
      */
-    public void deleteShoppingListItem(Integer itemId){
+    fun deleteShoppingListItem(itemId: Int) {
 
         // get reference to the shopper database
-        SQLiteDatabase db = getWritableDatabase();
+        val db = writableDatabase
 
         // define a delete statement and store it in a string
-        String query = "DELETE FROM " + TABLE_SHOPPING_LIST_ITEM + " WHERE " + COLUMN_ITEM_ID +
-                " = " + itemId;
+        val query = "DELETE FROM " + TABLE_SHOPPING_LIST_ITEM + " WHERE " + COLUMN_ITEM_ID +
+                " = " + itemId
 
         // execute the delete statement
-        db.execSQL(query);
+        db.execSQL(query)
 
         // close database reference
-        db.close();
+        db.close()
     }
 
     /**
@@ -307,27 +285,27 @@ public class DBHandler extends SQLiteOpenHelper {
      * gets clicked. It delets a row in the shoppinglist item an dshoppig list tables.
      * @param listId database id of th eshopping list to be deleted
      */
-    public void deleteShoppingList(Integer listId){
+    fun deleteShoppingList(listId: Int) {
 
         // get reference to the shopper database
-        SQLiteDatabase db = getWritableDatabase();
+        val db = writableDatabase
 
         // define a delete statement and store it in a string
-        String query1 = "DELETE FROM " + TABLE_SHOPPING_LIST_ITEM + " WHERE " + COLUMN_ITEM_LIST_ID +
-                " = " + listId;
+        val query1 = "DELETE FROM " + TABLE_SHOPPING_LIST_ITEM + " WHERE " + COLUMN_ITEM_LIST_ID +
+                " = " + listId
 
         // execute the delete statement
-        db.execSQL(query1);
+        db.execSQL(query1)
 
         // define a delete statement and store it in a string
-        String query2 = "DELETE FROM " + TABLE_SHOPPING_LIST+ " WHERE " + COLUMN_LIST_ID +
-                " = " + listId;
+        val query2 = "DELETE FROM " + TABLE_SHOPPING_LIST + " WHERE " + COLUMN_LIST_ID +
+                " = " + listId
 
         // execute the delete statement
-        db.execSQL(query2);
+        db.execSQL(query2)
 
         // close database reference
-        db.close();
+        db.close()
     }
 
     /**
@@ -335,39 +313,39 @@ public class DBHandler extends SQLiteOpenHelper {
      * @param listId database id of the shopping list
      * @return Total cost of the shopping list
      */
-    public String getShoppingListTotalCost(int listId){
+    fun getShoppingListTotalCost(listId: Int): String {
 
         // get reference to the shopper database
-        SQLiteDatabase db = getWritableDatabase();
+        val db = writableDatabase
 
         // declare and initialize the string returned by this method
-        String cost = "";
+        var cost = ""
 
         // declare a double that will be used to compute the toltal cost
-        Double totalCost = 0.0;
+        var totalCost = 0.0
 
         // define select statement and store it in string
-        String query = "SELECT * FROM " + TABLE_SHOPPING_LIST_ITEM +
-                " WHERE " + COLUMN_ITEM_LIST_ID + " = " + listId;
+        val query = "SELECT * FROM " + TABLE_SHOPPING_LIST_ITEM +
+                " WHERE " + COLUMN_ITEM_LIST_ID + " = " + listId
 
         // execute select statement and store its retunr in a cursor
-        Cursor c = db.rawQuery(query, null);
+        val c = db.rawQuery(query, null)
 
         // loop through the rows in the cursor
-        while (c.moveToNext()){
+        while (c.moveToNext()) {
             // add the cost of the current row into the tatal cost
-            totalCost += (c.getDouble((c.getColumnIndex("price")) +
-                    (c.getInt(c.getColumnIndex("quantity")))));
+            totalCost += c.getDouble(c.getColumnIndex("price") +
+                    c.getInt(c.getColumnIndex("quantity")))
         }
 
         // convert the total cost to a string
-        cost = String.valueOf(totalCost);
+        cost = totalCost.toString()
 
         // close database reference
-        db.close();
+        db.close()
 
         // returnString
-        return cost;
+        return cost
     }
 
     /**
@@ -375,20 +353,42 @@ public class DBHandler extends SQLiteOpenHelper {
      * @param listId database id of the shopping list on which the shopping list item exists
      * @return number of unpurchased shopping list items on the specified shopping list
      */
-    public int getUnpurchasedItems (Integer listId){
+    fun getUnpurchasedItems(listId: Int): Int {
 
         // get reference to the shopper database
-        SQLiteDatabase db = getWritableDatabase();
+        val db = writableDatabase
 
         // define select statement
-        String query = "SELECT * FROM " + TABLE_SHOPPING_LIST_ITEM +
+        val query = "SELECT * FROM " + TABLE_SHOPPING_LIST_ITEM +
                 " WHERE " + COLUMN_ITEM_HAS + " = \"false\" " +
-                " AND " + COLUMN_ITEM_LIST_ID + " = " + listId;
+                " AND " + COLUMN_ITEM_LIST_ID + " = " + listId
 
         // execute select statement and store its return in a Cursor
-        Cursor cursor = db.rawQuery(query, null);
+        val cursor = db.rawQuery(query, null)
 
         // return a count of the number of items in the cursor
-        return cursor.getCount();
+        return cursor.count
+    }
+
+    companion object {
+        // initialize constants for the DB name and version
+        const val DATABASE_NAME = "shopper.db"
+        const val DATABASE_VERSION = 2
+
+        // initialize constants for the shoppingList table
+        const val TABLE_SHOPPING_LIST = "shoppingList"
+        const val COLUMN_LIST_ID = "_id"
+        const val COLUMN_LIST_NAME = "name"
+        const val COLUMN_LIST_STORE = "store"
+        const val COLUMN_LIST_DATE = "date"
+
+        // initialize constants for the shoppingListItem table
+        const val TABLE_SHOPPING_LIST_ITEM = "shoppinglistitem"
+        const val COLUMN_ITEM_ID = "_id"
+        const val COLUMN_ITEM_NAME = "name"
+        const val COLUMN_ITEM_PRICE = "price"
+        const val COLUMN_ITEM_QUANTITY = "quantity"
+        const val COLUMN_ITEM_HAS = "item_has"
+        const val COLUMN_ITEM_LIST_ID = "list_id"
     }
 }

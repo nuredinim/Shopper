@@ -1,9 +1,9 @@
-package com.example.shopper;
+package com.example.shopper
 
-import android.app.Application;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.os.Build;
+import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
 
 /**
  * This class creates a notification channel for shopper. Notification Channel became
@@ -11,41 +11,41 @@ import android.os.Build;
  * Notification channel for shopper will be created one time as soon as the appication
  * starts and will be available for all other activity classes to use.
  */
-public class App extends Application{
-
-    // declare and initialize a Channel id
-    public static final String CHANNEL_SHOPPER_ID = "channelshopper";
-
+class App : Application() {
     // override the onCreate method
-    @Override
-    public void onCreate() {
-        super.onCreate();
+    override fun onCreate() {
+        super.onCreate()
 
         // call method that creates Notification Channel for Shopper
-        createNotificationChannel();
+        createNotificationChannel()
     }
 
     /**
      * This method creatse the notfication channel for shopper
      */
-    private void createNotificationChannel(){
+    private fun createNotificationChannel() {
         // check if Android Oreo(API 26) or higher becasue Nitification Channels werent available on lower versions
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // initialize Notification Chanel - must give it an Id, name and imporatnce
-            NotificationChannel channelshopper = new NotificationChannel(
+            val channelshopper = NotificationChannel(
                     CHANNEL_SHOPPER_ID,
                     "Channel Shopper",
                     NotificationManager.IMPORTANCE_DEFAULT
-            );
+            )
 
             // customize the notification channel - set it sdescription
-            channelshopper.setDescription("This is the Shopper Channel.");
+            channelshopper.description = "This is the Shopper Channel."
 
             // initialize a notification manager
-            NotificationManager manager = getSystemService(NotificationManager.class);
+            val manager = getSystemService(NotificationManager::class.java)
 
             // create shopper notification channel
-            manager.createNotificationChannel(channelshopper);
+            manager.createNotificationChannel(channelshopper)
         }
+    }
+
+    companion object {
+        // declare and initialize a Channel id
+        const val CHANNEL_SHOPPER_ID = "channelshopper"
     }
 }
